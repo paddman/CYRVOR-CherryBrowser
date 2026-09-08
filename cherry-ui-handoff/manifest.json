@@ -1,0 +1,58 @@
+[
+  {
+    "path": "reference/target-home.png",
+    "width": 1672,
+    "height": 941,
+    "mode": "RGB",
+    "sha256": "369af39b8f9fc36da1db232b1b29141d6553442b462a2f0305c9be6d9ebcd001",
+    "usage": "Design reference; not a finished cutout asset."
+  },
+  {
+    "path": "reference/target-browser-short-hair.png",
+    "width": 1672,
+    "height": 941,
+    "mode": "RGB",
+    "sha256": "dc0122575f1712c59c16c4da46de1b063341c49f142dd91c6c2f32951768d40c",
+    "usage": "Design reference; not a finished cutout asset."
+  },
+  {
+    "path": "reference/current-app.png",
+    "width": 1452,
+    "height": 914,
+    "mode": "RGBA",
+    "sha256": "85c413775292035ad3dfb0abd313ab4bf3ef9738ce7ed395b700fe05ea0b2f29",
+    "usage": "Design reference; not a finished cutout asset."
+  },
+  {
+    "path": "reference/cyrvor-brand.png",
+    "width": 1672,
+    "height": 941,
+    "mode": "RGBA",
+    "sha256": "6ec1284be18f117e976a2a90e357b33cef104c7b4abea90ba9614ded9eb1c8f9",
+    "usage": "Design reference; not a finished cutout asset."
+  },
+  {
+    "path": "reference/cherrywaf-brand.png",
+    "width": 2048,
+    "height": 682,
+    "mode": "RGBA",
+    "sha256": "39d0c6627d338eb03c21beae0217e14e01b6aab4c5b0ecf40a943d7dbb20821b",
+    "usage": "Design reference; not a finished cutout asset."
+  },
+  {
+    "path": "reference/nova-character.png",
+    "width": 941,
+    "height": 1672,
+    "mode": "RGBA",
+    "sha256": "422942ef8848050b79d3d7197f4813df21773e423b23270d1979b0273e1a2ca3",
+    "usage": "Design reference; not a finished cutout asset."
+  },
+  {
+    "path": "reference/sienna-character.png",
+    "width": 941,
+    "height": 1672,
+    "mode": "RGBA",
+    "sha256": "d5b319c86827c7029015d2b728a5b37dfd9f5f726f8bc375a507cf498e3ca31a",
+    "usage": "Design reference; not a finished cutout asset."
+  }
+]

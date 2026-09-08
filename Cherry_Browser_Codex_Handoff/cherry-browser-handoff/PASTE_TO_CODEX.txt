@@ -1,0 +1,28 @@
+แก้โปรเจกต์ Cherry Browser ปัจจุบันให้เป็นแอปเว็บเบราว์เซอร์ธีมอนิเมะตามภาพ ไม่ใช่เว็บไซต์จำลองหรือโปสเตอร์
+
+เริ่มจากอ่าน AGENTS.md ของ repository และไฟล์ทั้งหมดต่อไปนี้:
+- cherry-browser-handoff/CODEX_TASK_TH.md
+- cherry-browser-handoff/GRAPHICS_SPEC_TH.md
+- cherry-browser-handoff/ACCEPTANCE_TH.md
+- cherry-browser-handoff/AGENTS_APPEND_TH.md
+- cherry-browser-handoff/asset-plan.json
+- cherry-browser-handoff/styles/cherry-theme.css
+
+เปิดดู cherry-browser-handoff/reference/01-newtab-target.png เป็น visual target หลัก
+ดู reference/02-feature-reference.png เป็นขอบเขตฟีเจอร์ และ reference/characters/ เป็นแหล่งอ้างอิงกราฟิก
+ดู reference/03-current-app-before.png เพื่อเทียบสิ่งที่ต้องเปลี่ยน ไม่ต้องรักษาโลโก้ผลไม้หรือสีชมพูในภาพเดิม
+
+ให้ลงมือแก้โค้ดในโปรเจกต์เดิม พร้อมจัดเตรียมและผสานกราฟิกจริง ตรวจหน้าตาด้วย screenshot แล้วปรับซ้ำ
+คง engine, package manager, framework และระบบข้อมูลเดิมเท่าที่ทำได้ อย่าสร้างโปรเจกต์ตัวอย่างแยกมาแทน
+ภาพ reference เป็นต้นฉบับที่ยังไม่ผ่านการทำความสะอาด ห้ามนำภาพโปสเตอร์ทั้งใบมาตั้งเป็นหน้า UI แล้ววางปุ่มโปร่งใสทับ
+ห้ามใช้ผลเชอร์รี โล่ กุญแจ แม่กุญแจ ใน app chrome โลโก้ ไอคอน ตัวละคร หรือภาพตกแต่งที่แอปควบคุม
+ใช้ Cherry ตัวละครผมสีน้ำเงินตามอ้างอิง ไม่ใช่ผลไม้ และไม่เปลี่ยน app นี้เป็น SOC dashboard
+
+ทำ browser shell และหน้า New Tab ให้ใกล้ภาพก่อน จากนั้นเชื่อมเมนูและฟีเจอร์กับพฤติกรรมจริง
+ทุกปุ่มต้องทำงานจริงหรือแสดงข้อจำกัดตรงไปตรงมา ห้ามแสดงข้อมูลตัวอย่างเป็นข้อมูลจริง
+ใช้พื้นที่หน้าเว็บภายนอกเป็น viewport สะอาด ห้ามให้ภาพตัวละครหรือ CSS ของธีมทับเว็บไซต์ที่เปิด
+ตรวจ URL, tabs, history, bookmarks, downloads, workspace, split view, ธีม และ keyboard shortcuts
+สำหรับ AI/แปลภาษา/อากาศ ให้เชื่อม provider ที่ตั้งค่าไว้จริง ถ้ายังไม่มีให้แสดงสถานะต้องตั้งค่า ไม่แต่งผลลัพธ์
+
+สรุปสิ่งที่พบใน repository และแผนสั้น ๆ แล้วลงมือทำต่อได้เลย
+อย่าหยุดที่อธิบายหรือทำ mockup เมื่อจบให้ส่งรายการไฟล์ที่แก้ คำสั่งรันจริง ผลทดสอบ screenshot และข้อจำกัดที่ยังมี

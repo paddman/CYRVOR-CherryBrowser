@@ -1,0 +1,104 @@
+{
+  "version": 1,
+  "status": "implementation_plan_not_exported_assets",
+  "reference_target": "reference/01-newtab-target.png",
+  "runtime_destination": "ใช้โฟลเดอร์ assets เดิมของ repository หลังตรวจโครงสร้าง",
+  "global_rules_th": [
+    "ห้ามผลเชอร์รี โล่ กุญแจ แม่กุญแจ ทั้ง foreground/background และเครื่องแต่งกาย",
+    "ไฟล์ reference เป็นต้นฉบับที่ไม่ผ่าน retouch อย่านำไป ship อัตโนมัติ",
+    "ข้อความ UI ต้องเป็น DOM จริง ไม่ฝังในภาพ",
+    "export แล้วต้องตรวจด้วยตาและตรวจใน viewport จริง"
+  ],
+  "assets": [
+    {
+      "name": "city-backdrop.webp",
+      "source_candidates": [
+        "reference/characters/cherry-office.png",
+        "reference/characters/team.png"
+      ],
+      "target_size": [
+        1920,
+        1080
+      ],
+      "alpha": false,
+      "usage": "ฉากของ New Tab ผ่าน CSS overlay",
+      "preparation_th": "เลือกหรือจัดฉากให้ไม่มี UI ตัวอักษร และสัญลักษณ์ต้องห้าม ห้ามขยายภาพจนแตก"
+    },
+    {
+      "name": "cherry-hero.webp",
+      "source_candidates": [
+        "reference/characters/team.png",
+        "reference/characters/cherry-sheet.png"
+      ],
+      "target_long_edge": 1400,
+      "alpha": true,
+      "usage": "hero ด้านซ้าย",
+      "preparation_th": "แยกตัวละครโดยรักษาหน้าและผม เอาตราต้องห้ามออกก่อน export หากไม่มีเครื่องมือให้ crop อย่างตั้งใจและระบุว่าไม่ใช่ alpha cutout"
+    },
+    {
+      "name": "team-banner.webp",
+      "source_candidates": [
+        "reference/characters/team.png"
+      ],
+      "target_size": [
+        1200,
+        400
+      ],
+      "alpha": false,
+      "usage": "banner ทีมส่วนล่าง",
+      "preparation_th": "จัด crop ให้เห็นหลายตัวละครโดยไม่ตัดหน้าหรือยืดภาพ เอาตราต้องห้ามและตัวอักษรออก"
+    },
+    {
+      "name": "avatar-cherry.webp",
+      "source_candidates": [
+        "reference/characters/cherry-sheet.png"
+      ],
+      "target_size": [
+        256,
+        256
+      ],
+      "alpha": false,
+      "usage": "avatar/profile",
+      "preparation_th": "crop ใบหน้าโดยไม่ติด badge/text"
+    },
+    {
+      "name": "avatar-violet.webp",
+      "source_candidates": [
+        "reference/characters/character-board.png"
+      ],
+      "target_size": [
+        256,
+        256
+      ],
+      "alpha": false,
+      "usage": "theme picker",
+      "preparation_th": "ยืนยันชื่อจาก board crop หน้าผมม่วง ไม่เอากรอบชื่อและ UI มาด้วย"
+    },
+    {
+      "name": "avatar-ghost.webp",
+      "source_candidates": [
+        "reference/characters/character-board.png"
+      ],
+      "target_size": [
+        256,
+        256
+      ],
+      "alpha": false,
+      "usage": "theme picker",
+      "preparation_th": "ยืนยันชื่อจาก board crop ใบหน้า ไม่เอากรอบชื่อและ UI มาด้วย"
+    },
+    {
+      "name": "avatar-nova.webp",
+      "source_candidates": [
+        "reference/characters/character-board.png"
+      ],
+      "target_size": [
+        256,
+        256
+      ],
+      "alpha": false,
+      "usage": "theme picker",
+      "preparation_th": "ยืนยันชื่อจาก board crop ใบหน้า ไม่เอากรอบชื่อและ UI มาด้วย"
+    }
+  ]
+}

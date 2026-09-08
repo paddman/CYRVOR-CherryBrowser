@@ -1,0 +1,65 @@
+[
+  {
+    "path": "reference/01-newtab-target.png",
+    "original_filename": "หน_าแรกเชอร_ร_เบราว_เซอร_ไซเบอร_พ_งก.png",
+    "width": 1672,
+    "height": 941,
+    "sha256": "2e19781f0f07978913434ab54f40e4f5497b81f3c121c8c882ca8234a10d18bc",
+    "status": "reference_only_not_production_art",
+    "notice_th": "ต้นฉบับอ้างอิงที่ไม่ได้แก้ไข ห้ามคัดลอกผลเชอร์รี โล่ กุญแจ แม่กุญแจ หรือตัวอักษรเพี้ยนที่อาจปรากฏในภาพไปใช้ในแอป"
+  },
+  {
+    "path": "reference/02-feature-reference.png",
+    "original_filename": "โปสเตอร_ฟ_เจอร_cherry_browser_แห_งอนาคต.png",
+    "width": 1672,
+    "height": 941,
+    "sha256": "77eda3258c2fb75c5b82c6a3ed2ad411f670f87304f032531bf18feef5b89749",
+    "status": "reference_only_not_production_art",
+    "notice_th": "ต้นฉบับอ้างอิงที่ไม่ได้แก้ไข ห้ามคัดลอกผลเชอร์รี โล่ กุญแจ แม่กุญแจ หรือตัวอักษรเพี้ยนที่อาจปรากฏในภาพไปใช้ในแอป"
+  },
+  {
+    "path": "reference/03-current-app-before.png",
+    "original_filename": "8fcf8620-69e0-4ffb-b16c-7d0fa2645c4c.png",
+    "width": 1473,
+    "height": 969,
+    "sha256": "e4f9a9c79c979b8f01f01ec3fc9ccf0574a5e582386213447bc44d7988ea70dc",
+    "status": "reference_only_not_production_art",
+    "notice_th": "ต้นฉบับอ้างอิงที่ไม่ได้แก้ไข ห้ามคัดลอกผลเชอร์รี โล่ กุญแจ แม่กุญแจ หรือตัวอักษรเพี้ยนที่อาจปรากฏในภาพไปใช้ในแอป"
+  },
+  {
+    "path": "reference/characters/cherry-sheet.png",
+    "original_filename": "65b40ec2-9046-417d-8da1-de857221a57e.png",
+    "width": 1214,
+    "height": 1295,
+    "sha256": "0967a1b8cf0a8071910ff4f711ddcdbb9339702ec7f90d3ae321b93d3cb4213b",
+    "status": "reference_only_not_production_art",
+    "notice_th": "ต้นฉบับอ้างอิงที่ไม่ได้แก้ไข ห้ามคัดลอกผลเชอร์รี โล่ กุญแจ แม่กุญแจ หรือตัวอักษรเพี้ยนที่อาจปรากฏในภาพไปใช้ในแอป"
+  },
+  {
+    "path": "reference/characters/cherry-office.png",
+    "original_filename": "394b811a-55e3-4c13-8db1-3a36a513f91d.png",
+    "width": 941,
+    "height": 1672,
+    "sha256": "58fd90d4272d2c422774482ecd5b13e7173090de24f38f70fcf7f6cc0bd48b9a",
+    "status": "reference_only_not_production_art",
+    "notice_th": "ต้นฉบับอ้างอิงที่ไม่ได้แก้ไข ห้ามคัดลอกผลเชอร์รี โล่ กุญแจ แม่กุญแจ หรือตัวอักษรเพี้ยนที่อาจปรากฏในภาพไปใช้ในแอป"
+  },
+  {
+    "path": "reference/characters/team.png",
+    "original_filename": "660ed63d-6e03-4174-9ca3-04d988972610.png",
+    "width": 941,
+    "height": 1672,
+    "sha256": "37fbb8235b8f31e3d36896cb0fb4aa0fb193ea8473696281699969c8f52b392f",
+    "status": "reference_only_not_production_art",
+    "notice_th": "ต้นฉบับอ้างอิงที่ไม่ได้แก้ไข ห้ามคัดลอกผลเชอร์รี โล่ กุญแจ แม่กุญแจ หรือตัวอักษรเพี้ยนที่อาจปรากฏในภาพไปใช้ในแอป"
+  },
+  {
+    "path": "reference/characters/character-board.png",
+    "original_filename": "0ca13690-bbc5-4d50-8901-c6007a31fad3.png",
+    "width": 1235,
+    "height": 1274,
+    "sha256": "63bd5f4b93696bf08acf06cc502c102dfea1ee245344659d52e1bc0adb3c8d0a",
+    "status": "reference_only_not_production_art",
+    "notice_th": "ต้นฉบับอ้างอิงที่ไม่ได้แก้ไข ห้ามคัดลอกผลเชอร์รี โล่ กุญแจ แม่กุญแจ หรือตัวอักษรเพี้ยนที่อาจปรากฏในภาพไปใช้ในแอป"
+  }
+]

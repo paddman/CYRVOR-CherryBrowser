@@ -1,0 +1,33 @@
+/* Reference values only. Integrate into the existing theme without overriding unrelated UI. */
+.cherry-shell {
+  --cherry-bg: #061225;
+  --cherry-surface: #0b1c36;
+  --cherry-surface-raised: #10284b;
+  --cherry-accent: #367bff;
+  --cherry-cyan: #60d6ff;
+  --cherry-text: #f2f7ff;
+  --cherry-text-muted: #aec0dc;
+  --cherry-border: rgb(109 165 245 / 28%);
+  --cherry-radius-sm: 10px;
+  --cherry-radius-md: 14px;
+  --cherry-radius-lg: 18px;
+  --cherry-space-1: 4px;
+  --cherry-space-2: 8px;
+  --cherry-space-3: 12px;
+  --cherry-space-4: 16px;
+  --cherry-space-5: 20px;
+  --cherry-space-6: 24px;
+  --cherry-sidebar-width: 240px;
+  --cherry-tabbar-height: 44px;
+  --cherry-toolbar-height: 56px;
+  --cherry-focus-ring: 0 0 0 3px rgb(96 214 255 / 58%);
+  --cherry-motion-fast: 140ms;
+  --cherry-motion-normal: 200ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cherry-shell {
+    --cherry-motion-fast: 0ms;
+    --cherry-motion-normal: 0ms;
+  }
+}
