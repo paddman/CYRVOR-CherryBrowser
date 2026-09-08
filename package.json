@@ -4,7 +4,7 @@
   "description": "Cherry — a little space for your curiosity. A Windows desktop web browser.",
   "main": "src/main.js",
   "author": "Cherry",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "scripts": {
     "start": "electron .",
     "test": "node --test tests/core.test.js tests/calendar.test.js tests/themes.test.js",

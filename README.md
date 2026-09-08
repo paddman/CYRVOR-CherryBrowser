@@ -102,3 +102,10 @@ Restore คืน URL/workspace/pin/ตัวเลือกพักแท็�
 Reader อาจอ่านหลายคอลัมน์/iframe ได้ไม่ครบ ยังไม่มี ad/tracker blocking rule engine, Chrome extension manager, password manager, account sync หรือ auto-update ไม่รับรอง OAuth/DRM/ทุกเว็บไซต์ EXE ยังไม่ได้ลงลายเซ็นดิจิทัล
 
 ดูผลตรวจรายข้อใน [TEST_REPORT.md](TEST_REPORT.md) และ asset mapping ใน [docs/ARTWORK.md](docs/ARTWORK.md)
+
+## License
+
+Source code is licensed under the [Apache License 2.0](LICENSE).
+
+CYRVOR and Cherry artwork, characters, logos, trademarks, and brand assets
+are separate copyrighted materials. See [ASSETS-LICENSE.md](ASSETS-LICENSE.md).
