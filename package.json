@@ -9,7 +9,8 @@
     "start": "electron .",
     "test": "node --test tests/core.test.js tests/calendar.test.js tests/themes.test.js",
     "test:e2e": "playwright test",
-    "check": "node --check src/main.js && node --check src/preload.js && node --check src/core.js && node --check src/renderer.js && node --check src/icons.js && node --check src/providers.js && node --check src/oauth.js && node --check src/page-extraction.js && node --check src/calendar.js && node --check src/calendar-ui.js && node --check src/themes.js && node --check src/theme-studio.js && node --check src/window-drag.js",
+    "check": "node --check src/main.js && node --check src/preload.js && node --check src/core.js && node --check src/renderer.js && node --check src/icons.js && node --check src/providers.js && node --check src/oauth.js && node --check src/page-extraction.js && node --check src/calendar.js && node --check src/calendar-ui.js && node --check src/themes.js && node --check src/theme-studio.js && node --check src/window-drag.js && node --check scripts/security-baseline.js && npm run security:check",
+    "security:check": "node scripts/security-baseline.js",
     "test:native": "node scripts/test-native-lifecycle.js",
     "assets:export": "node scripts/export-anime-assets.js",
     "assets:icon": "node scripts/build-app-icon.js",
@@ -25,6 +26,14 @@
   "build": {
     "appId": "com.cherry.webbrowser",
     "productName": "Cherrywebbrowser",
+    "asar": true,
+    "electronFuses": {
+      "runAsNode": false,
+      "enableNodeOptionsEnvironmentVariable": false,
+      "enableNodeCliInspectArguments": false,
+      "enableEmbeddedAsarIntegrityValidation": true,
+      "onlyLoadAppFromAsar": true
+    },
     "directories": {
       "output": "release-browser-identity"
     },

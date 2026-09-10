@@ -1,0 +1,67 @@
+name: Security Foundation CI
+
+on:
+  push:
+    branches: [main, security-foundation-v1.4]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cherry-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Syntax, unit and security baseline
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Static and security checks
+        run: npm run check
+
+      - name: Unit tests
+        run: npm test
+
+  package-windows:
+    name: Package hardened Windows app
+    runs-on: windows-latest
+    timeout-minutes: 30
+    needs: verify
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build unpacked Windows application
+        run: npm run build:dir
+
+      - name: Upload unpacked smoke-test build
+        uses: actions/upload-artifact@v4
+        with:
+          name: cherry-windows-unpacked-${{ github.sha }}
+          path: release-browser-identity/win-unpacked/
+          retention-days: 7
+          if-no-files-found: error
