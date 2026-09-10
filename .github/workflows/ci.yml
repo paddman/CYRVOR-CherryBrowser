@@ -28,7 +28,18 @@ jobs:
           node-version: 24
           cache: npm
 
-      - name: Install dependencies
+      - name: Repair stale lockfile for this branch
+        run: npm install --package-lock-only --ignore-scripts
+
+      - name: Upload repaired lockfile
+        uses: actions/upload-artifact@v4
+        with:
+          name: repaired-package-lock-${{ github.sha }}
+          path: package-lock.json
+          retention-days: 1
+          if-no-files-found: error
+
+      - name: Install dependencies from repaired lockfile
         run: npm ci
 
       - name: Static and security checks
@@ -52,7 +63,10 @@ jobs:
           node-version: 24
           cache: npm
 
-      - name: Install dependencies
+      - name: Repair stale lockfile for this branch
+        run: npm install --package-lock-only --ignore-scripts
+
+      - name: Install dependencies from repaired lockfile
         run: npm ci
 
       - name: Build unpacked Windows application
