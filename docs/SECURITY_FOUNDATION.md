@@ -6,7 +6,7 @@ This document records the hardening baseline introduced before adding more brows
 
 ### Electron binary hardening
 
-`electron-builder` now explicitly packages the application in ASAR and flips these Electron fuses:
+Cherry is pinned to Electron 44.3.0. `electron-builder` explicitly packages the application in ASAR and flips these Electron fuses:
 
 - `runAsNode: false`
 - `enableNodeOptionsEnvironmentVariable: false`
@@ -56,11 +56,21 @@ The bootstrap also denies `<webview>` attachment as defense in depth. Cherry con
 
 The script is part of `npm run check`, so it runs locally and in CI.
 
-### CI
+### Deterministic CI
 
-GitHub Actions performs dependency installation, static/security checks, unit tests and a Windows unpacked build. The build artifact is retained briefly for smoke testing. E2E/native GUI tests remain local for now because hosted Windows runners are not a reliable substitute for an interactive desktop session.
+The stale npm lockfile found when this work started has been regenerated and committed for Electron 44.3.0. CI now installs only with `npm ci`; it does not repair or mutate dependency metadata during verification.
 
-The repository entered this work with a stale npm lockfile. The branch temporarily regenerates a lockfile in CI so the corrected lock can be captured and committed; the final workflow must return to deterministic `npm ci` once that repaired lockfile is in the repository.
+GitHub Actions uses the current v7 action runtime and performs:
+
+1. locked dependency installation;
+2. static and security baseline checks;
+3. unit tests, including URL Guard cases;
+4. source Electron E2E tests;
+5. Windows unpacked packaging;
+6. the existing E2E suite against the packaged executable;
+7. upload of the unpacked build as a short-lived smoke-test artifact.
+
+A pull request should not be merged while any of these gates fail. Native interactive desktop checks can still be run locally for behaviors that depend on Windows desktop interaction.
 
 ### Dependency update discipline
 
