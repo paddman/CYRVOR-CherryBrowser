@@ -67,19 +67,21 @@ GitHub Actions uses the current v7 action runtime and performs:
 1. locked dependency installation;
 2. static and security baseline checks;
 3. unit tests, including URL Guard cases;
-4. source Electron E2E tests;
+4. the full source Electron E2E suite;
 5. Windows unpacked packaging;
 6. direct readback of Electron fuse states from the packaged executable;
-7. the existing E2E suite against the packaged executable;
+7. a native packaged startup smoke that launches `Cherrywebbrowser.exe` without Playwright/CDP, verifies that a Cherry main window appears, verifies that an isolated schema-4 test profile is initialized, and requests a graceful window close;
 8. upload of the unpacked build as a short-lived smoke-test artifact.
 
 The binary fuse check requires `RunAsNode`, `EnableNodeOptionsEnvironmentVariable` and `EnableNodeCliInspectArguments` to be disabled, and requires `EnableEmbeddedAsarIntegrityValidation` and `OnlyLoadAppFromAsar` to be enabled. This verifies the produced executable rather than trusting only the build configuration.
+
+The packaged binary is intentionally **not** launched through Playwright's Electron driver. Playwright documents that `electron.launch()` may time out when Electron's `EnableNodeCliInspectArguments` fuse is disabled because its Electron automation requires that debugging path. Re-enabling the fuse only to make a packaged E2E harness attach would weaken the shipped binary. The full functional E2E suite therefore runs against the source Electron runtime, while the hardened executable is independently checked through fuse readback and native startup/profile/shutdown behavior. See https://playwright.dev/docs/api/class-electron#known-issues.
 
 A pull request should not be merged while any of these gates fail. Native interactive desktop checks can still be run locally for behaviors that depend on Windows desktop interaction.
 
 ### Dependency update discipline
 
-Dependabot checks npm and GitHub Actions weekly. Electron updates should be merged only after the existing fullscreen, audio, Calendar, storage and packaged-app regression suites pass.
+Dependabot checks npm and GitHub Actions weekly. Electron updates should be merged only after the existing fullscreen, audio, Calendar, storage and source-app regression suites pass, followed by hardened packaged-binary verification.
 
 ## Next security milestones
 
