@@ -53,6 +53,8 @@ requireCondition(main.includes('function trusted(event)'), 'IPC sender validatio
 requireCondition(main.includes("event.senderFrame === win.webContents.mainFrame"), 'IPC validation must bind commands to the top-level Cherry UI frame');
 
 requireCondition(bootstrap.includes("app.on('web-contents-created'"), 'URL Guard must attach before Cherry main process creates browsing contents');
+requireCondition(bootstrap.includes('protectProgrammaticLoads(contents)'), 'URL Guard must cover programmatic webContents.loadURL calls');
+requireCondition(bootstrap.includes('contents.loadURL = async'), 'URL Guard must wrap direct loadURL navigation');
 requireCondition(bootstrap.includes("contents.on('will-navigate'"), 'URL Guard must inspect top-level navigations');
 requireCondition(bootstrap.includes("contents.on('will-redirect'"), 'URL Guard must inspect redirects');
 requireCondition(bootstrap.includes("contents.on('will-attach-webview'"), 'webview attachment must remain denied');
