@@ -1,0 +1,98 @@
+name: Security Foundation CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cherry-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Syntax, unit, security and source E2E
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Static and security checks
+        run: npm run check
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Source Electron E2E
+        run: npm run test:e2e
+
+  package-windows:
+    name: Package and verify hardened Windows app
+    runs-on: windows-latest
+    timeout-minutes: 15
+    needs: verify
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Build unpacked Windows application
+        run: npm run build:dir
+
+      - name: Verify packaged Electron fuses
+        shell: pwsh
+        run: |
+          $exe = (Resolve-Path 'release-browser-identity/win-unpacked/Cherrywebbrowser.exe').Path
+          $env:NO_COLOR = '1'
+          $fuses = & .\node_modules\.bin\electron-fuses.cmd read --app $exe 2>&1 | Out-String
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host $fuses
+            throw 'Unable to read Electron fuses from packaged executable'
+          }
+          Write-Host $fuses
+          $required = @(
+            'RunAsNode is Disabled',
+            'EnableNodeOptionsEnvironmentVariable is Disabled',
+            'EnableNodeCliInspectArguments is Disabled',
+            'EnableEmbeddedAsarIntegrityValidation is Enabled',
+            'OnlyLoadAppFromAsar is Enabled'
+          )
+          foreach ($expectation in $required) {
+            if (-not $fuses.Contains($expectation)) {
+              throw "Packaged Electron fuse mismatch: expected '$expectation'"
+            }
+          }
+
+      - name: Native packaged startup smoke
+        shell: pwsh
+        run: .\scripts\verify-packaged-startup.ps1 -Executable 'release-browser-identity\win-unpacked\Cherrywebbrowser.exe'
+
+      - name: Upload unpacked smoke-test build
+        uses: actions/upload-artifact@v7
+        with:
+          name: cherry-windows-unpacked-${{ github.sha }}
+          path: release-browser-identity/win-unpacked/
+          retention-days: 7
+          if-no-files-found: error
