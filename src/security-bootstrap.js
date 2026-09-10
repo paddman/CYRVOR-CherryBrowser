@@ -43,7 +43,7 @@ async function confirmNavigation(contents, url, finding) {
       title: 'CYRVOR URL Guard',
       message: 'Cherry พบลักษณะ URL ที่อาจทำให้ผู้ใช้เข้าใจปลายทางผิด',
       detail,
-      buttons: ['ย้อนกลับ', 'เปิดต่อ'],
+      buttons: ['ไม่เปิด', 'เปิดต่อ'],
       defaultId: 0,
       cancelId: 0,
       noLink: true,
@@ -81,8 +81,8 @@ function protectProgrammaticLoads(contents) {
       if (finding.warn) {
         const allowed = await confirmNavigation(contents, url, finding);
         if (!allowed) {
-          const error = new Error('Navigation cancelled by CYRVOR URL Guard');
-          error.code = 'ERR_CYRVOR_URL_GUARD';
+          const error = new Error('CYRVOR URL Guard blocked this navigation by user choice');
+          error.code = 'CYRVOR URL Guard · ไม่ได้เปิด URL นี้ตามที่ผู้ใช้เลือก';
           throw error;
         }
         grantBypass(navigationKey(contents, url));

@@ -10,7 +10,7 @@ function scriptSet(value) {
   const scripts = new Set();
   for (const char of value.normalize('NFKC')) {
     const code = char.codePointAt(0);
-    if ((code >= 0x0041 && code <= 0x007a) || (code >= 0x00c0 && code <= 0x024f)) scripts.add('latin');
+    if ((code >= 0x0041 && code <= 0x005a) || (code >= 0x0061 && code <= 0x007a) || (code >= 0x00c0 && code <= 0x024f)) scripts.add('latin');
     else if (code >= 0x0370 && code <= 0x03ff) scripts.add('greek');
     else if (code >= 0x0400 && code <= 0x052f) scripts.add('cyrillic');
   }
@@ -22,6 +22,11 @@ function hasMixedConfusableScript(hostname) {
     const scripts = scriptSet(domainToUnicode(label));
     return scripts.has('latin') && (scripts.has('cyrillic') || scripts.has('greek'));
   });
+}
+
+function isLoopbackIP(hostname) {
+  const host = String(hostname || '').toLowerCase();
+  return host === '::1' || host.startsWith('127.');
 }
 
 function inspectURL(value) {
@@ -44,7 +49,7 @@ function inspectURL(value) {
   if (url.username || url.password) high.push('URL ฝังชื่อผู้ใช้หรือรหัสผ่าน ซึ่งอาจทำให้โดเมนปลายทางดูสับสน');
   if (BIDI_CONTROL.test(unicodeHost)) high.push('ชื่อโดเมนมีอักขระควบคุมทิศทางข้อความที่อาจใช้ซ่อนชื่อจริง');
   if (hasMixedConfusableScript(url.hostname)) high.push('ชื่อโดเมนผสม Latin กับ Cyrillic/Greek ใน label เดียวกัน คล้ายเทคนิค homograph phishing');
-  if (net.isIP(ipHost) && sensitive) high.push('หน้า login/บัญชีใช้ IP address โดยตรงแทนชื่อโดเมน');
+  if (net.isIP(ipHost) && !isLoopbackIP(ipHost) && sensitive) high.push('หน้า login/บัญชีใช้ IP address โดยตรงแทนชื่อโดเมน');
 
   if (url.hostname.split('.').some(label => label.startsWith('xn--'))) reasons.push('โดเมน IDN/Punycode ควรตรวจชื่อปลายทางให้ชัดเจน');
   if (url.protocol === 'http:' && sensitive) reasons.push('หน้าที่ดูเกี่ยวกับบัญชีหรือการเข้าสู่ระบบกำลังใช้ HTTP ที่ไม่เข้ารหัส');

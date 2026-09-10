@@ -31,9 +31,18 @@ test('single-script internationalized domain is not treated as mixed-script phis
   assert.equal(result.warn, false);
 });
 
-test('IP-literal login URL warns while ordinary IP content remains usable', () => {
+test('external IP-literal login URL warns while ordinary IP content remains usable', () => {
   assert.equal(inspectURL('https://203.0.113.10/login').warn, true);
   assert.equal(inspectURL('https://203.0.113.10/status').warn, false);
+});
+
+test('loopback IP login is review-only so local development is not blocked', () => {
+  const ipv4 = inspectURL('http://127.0.0.1:8080/login');
+  const ipv6 = inspectURL('http://[::1]:8080/login');
+  assert.equal(ipv4.warn, false);
+  assert.equal(ipv4.severity, 'medium');
+  assert.equal(ipv6.warn, false);
+  assert.equal(ipv6.severity, 'medium');
 });
 
 test('HTTP sensitive pages are marked for review but not silently blocked', () => {
