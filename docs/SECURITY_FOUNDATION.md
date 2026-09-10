@@ -18,6 +18,26 @@ These settings reduce ways in which a packaged Electron executable can be repurp
 
 Cookie encryption is intentionally not flipped in this change. Enabling it is a one-way profile migration for Chromium cookie storage and must ship with explicit rollback/migration testing first. `grantFileProtocolExtraPrivileges` is also not changed yet because the current internal shell still boots from a local file URL; the shell should migrate to a privileged custom protocol before that fuse is tightened.
 
+### CYRVOR URL Guard v1
+
+`src/security-bootstrap.js` is now the Electron entry point and installs navigation protection before the existing Cherry main process creates browser contents. It then hands control to the existing `src/main.js`.
+
+The guard covers two navigation paths:
+
+- direct/programmatic `webContents.loadURL()` calls used by Cherry itself;
+- page-initiated top-level navigation and redirects through `will-navigate` / `will-redirect`.
+
+The first local-only heuristic engine in `src/url-guard.js` warns before navigation for high-confidence confusion patterns:
+
+- credentials embedded in a URL;
+- mixed Latin + Cyrillic/Greek characters inside the same internationalized-domain label;
+- bidirectional text controls in a displayed hostname;
+- login/account-like paths hosted directly on an IP address.
+
+Punycode/IDN, unusually deep hostnames and HTTP account/login paths are marked as review signals but are not silently blocked. A high-confidence case displays **Back** and **Continue** choices. The check runs locally and does not send browsing URLs to a reputation service.
+
+The bootstrap also denies `<webview>` attachment as defense in depth. Cherry continues to use `WebContentsView` with the existing sandbox and permission policy.
+
 ### Security regression gate
 
 `scripts/security-baseline.js` fails when critical protections disappear, including:
@@ -31,13 +51,16 @@ Cookie encryption is intentionally not flipped in this change. Enabling it is a 
 - popup policy present;
 - restrictive internal CSP present;
 - AI provider redirects disabled, HTTPS enforced for remote providers, finite timeouts and response limits retained;
-- Electron hardening fuses retained.
+- Electron hardening fuses retained;
+- URL Guard bootstrap remains the application entry point and continues to cover direct loads, page navigations and redirects.
 
 The script is part of `npm run check`, so it runs locally and in CI.
 
 ### CI
 
-GitHub Actions now performs `npm ci`, static/security checks, unit tests and a Windows unpacked build. The build artifact is retained briefly for smoke testing. E2E/native GUI tests remain local for now because hosted Windows runners are not a reliable substitute for an interactive desktop session.
+GitHub Actions performs dependency installation, static/security checks, unit tests and a Windows unpacked build. The build artifact is retained briefly for smoke testing. E2E/native GUI tests remain local for now because hosted Windows runners are not a reliable substitute for an interactive desktop session.
+
+The repository entered this work with a stale npm lockfile. The branch temporarily regenerates a lockfile in CI so the corrected lock can be captured and committed; the final workflow must return to deterministic `npm ci` once that repaired lockfile is in the repository.
 
 ### Dependency update discipline
 
@@ -49,33 +72,21 @@ Dependabot checks npm and GitHub Actions weekly. Electron updates should be merg
 
 Move the application shell from `file://.../src/index.html` to a registered secure/standard protocol such as `cherry-app://app/`. Keep a strict path allow-list and serve only packaged application resources. After that migration passes regression tests, disable the `grantFileProtocolExtraPrivileges` fuse.
 
-### 2. CYRVOR URL Guard
-
-Add a navigation decision layer before any guest load. The first local-only version should identify high-confidence hazards without pretending to be a cloud reputation service:
-
-- embedded URL credentials;
-- Unicode/IDN display confusion and mixed-script hostnames;
-- suspicious IP-literal login URLs;
-- known dangerous schemes and malformed navigation;
-- excessive redirect chains;
-- HTTP pages requesting sensitive permissions;
-- lookalike-domain heuristics with a clear explanation rather than silent blocking.
-
-Suspicious cases should use an interstitial with **Back** and an explicit **Continue anyway** action. A heuristic score alone must never silently block an ordinary site.
-
-### 3. Reputation provider interface
+### 2. Reputation provider interface
 
 Add a provider interface separate from AI. It should accept only the minimum URL/domain/hash material needed by the configured service, enforce HTTPS, reject redirects, apply timeouts/response limits and clearly document privacy behavior. Local CYRVOR reputation, enterprise allow/deny lists and third-party services should all fit behind the same interface.
 
-### 4. Download Guard
+Reputation data can raise or lower URL Guard confidence, but a heuristic or model score alone must not silently block an ordinary site. Blocking policy needs explicit rule provenance and an auditable reason.
+
+### 3. Download Guard
 
 Before opening a downloaded file, inspect filename, final extension, MIME metadata and file magic where practical. Flag double extensions and executable/script types. Integrate Windows Defender or an enterprise scanner through an explicit provider boundary rather than allowing an LLM to decide whether a file is safe.
 
-### 5. Tracker protection and containers
+### 4. Tracker protection and containers
 
 Implement request filtering separately from the renderer UI, with observable rule/version state. Add isolated browsing containers backed by distinct Electron session partitions for work/personal/banking/research use cases. Workspaces alone are not security boundaries because their normal cookies currently share the same persistent session.
 
-### 6. Signing and updates
+### 5. Signing and updates
 
 Do not call an unsigned portable build a production release. Add Windows code signing and a signed update channel after certificate/secrets are provisioned. CI may build unsigned smoke-test artifacts, but release artifacts should be signed and traceable to a tagged source revision.
 
