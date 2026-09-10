@@ -2,7 +2,7 @@ name: Security Foundation CI
 
 on:
   push:
-    branches: [main, security-foundation-v1.4]
+    branches: [main]
   pull_request:
     branches: [main]
 
@@ -60,6 +60,30 @@ jobs:
 
       - name: Build unpacked Windows application
         run: npm run build:dir
+
+      - name: Verify packaged Electron fuses
+        shell: pwsh
+        run: |
+          $exe = (Resolve-Path 'release-browser-identity/win-unpacked/Cherrywebbrowser.exe').Path
+          $env:NO_COLOR = '1'
+          $fuses = & .\node_modules\.bin\electron-fuses.cmd read --app $exe 2>&1 | Out-String
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host $fuses
+            throw 'Unable to read Electron fuses from packaged executable'
+          }
+          Write-Host $fuses
+          $required = @(
+            'RunAsNode is Disabled',
+            'EnableNodeOptionsEnvironmentVariable is Disabled',
+            'EnableNodeCliInspectArguments is Disabled',
+            'EnableEmbeddedAsarIntegrityValidation is Enabled',
+            'OnlyLoadAppFromAsar is Enabled'
+          )
+          foreach ($expectation in $required) {
+            if (-not $fuses.Contains($expectation)) {
+              throw "Packaged Electron fuse mismatch: expected '$expectation'"
+            }
+          }
 
       - name: Packaged Electron E2E
         shell: pwsh
