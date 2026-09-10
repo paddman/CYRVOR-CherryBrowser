@@ -32,9 +32,11 @@ The first local-only heuristic engine in `src/url-guard.js` warns before navigat
 - credentials embedded in a URL;
 - mixed Latin + Cyrillic/Greek characters inside the same internationalized-domain label;
 - bidirectional text controls in a displayed hostname;
-- login/account-like paths hosted directly on an IP address.
+- login/account-like paths hosted directly on an external IP address.
 
-Punycode/IDN, unusually deep hostnames and HTTP account/login paths are marked as review signals but are not silently blocked. A high-confidence case displays **Back** and **Continue** choices. The check runs locally and does not send browsing URLs to a reputation service.
+Loopback IPs such as `127.0.0.1` and `::1` are exempt from the external-IP phishing warning so local development and administration pages are not hard-blocked. An HTTP login path on loopback is still classified as a review signal because the connection is unencrypted.
+
+Punycode/IDN, unusually deep hostnames and HTTP account/login paths are marked as review signals but are not silently blocked. A high-confidence case displays **Do not open** and **Continue** choices. The check runs locally and does not send browsing URLs to a reputation service.
 
 The bootstrap also denies `<webview>` attachment as defense in depth. Cherry continues to use `WebContentsView` with the existing sandbox and permission policy.
 
@@ -67,8 +69,11 @@ GitHub Actions uses the current v7 action runtime and performs:
 3. unit tests, including URL Guard cases;
 4. source Electron E2E tests;
 5. Windows unpacked packaging;
-6. the existing E2E suite against the packaged executable;
-7. upload of the unpacked build as a short-lived smoke-test artifact.
+6. direct readback of Electron fuse states from the packaged executable;
+7. the existing E2E suite against the packaged executable;
+8. upload of the unpacked build as a short-lived smoke-test artifact.
+
+The binary fuse check requires `RunAsNode`, `EnableNodeOptionsEnvironmentVariable` and `EnableNodeCliInspectArguments` to be disabled, and requires `EnableEmbeddedAsarIntegrityValidation` and `OnlyLoadAppFromAsar` to be enabled. This verifies the produced executable rather than trusting only the build configuration.
 
 A pull request should not be merged while any of these gates fail. Native interactive desktop checks can still be run locally for behaviors that depend on Windows desktop interaction.
 
