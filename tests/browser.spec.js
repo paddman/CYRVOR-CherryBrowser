@@ -11,7 +11,7 @@ async function launch(){
 }
 const state=()=>page.evaluate(()=>window.cherry.getState());
 async function call(action,payload){const r=await page.evaluate(([a,p])=>window.cherry.command(a,p),[action,payload]);expect(r.ok,r.error).toBe(true);return r;}
-async function waitURL(url){await expect.poll(async()=>{const s=await state();const t=s.tabs.find(t=>t.id===s.activeId);return t?{url:t.url,loading:t.loading,error:t.error?.description||null}:null;},{timeout:15000,message:wait for active tab to finish }).toEqual({url,loading:false,error:null});}
+async function waitURL(url){await expect.poll(async()=>{const s=await state();const t=s.tabs.find(t=>t.id===s.activeId);return t?{url:t.url,loading:t.loading,error:t.error?.description||null}:null;},{timeout:15000,message:'wait for active tab navigation'}).toEqual({url,loading:false,error:null});}
 async function navigate(url){await page.locator('#address').fill(url);await page.locator('#address').press('Enter');await waitURL(url);}
 async function guestEval(expression,url){return instance.evaluate(async({webContents},{expression,url})=>{const wc=webContents.getAllWebContents().find(w=>w.getURL()===url);return wc.executeJavaScript(expression);},{expression,url});}
 async function views(){return instance.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows()[0].contentView.children.filter(v=>v.webContents?.getURL().startsWith('http')).map(v=>({url:v.webContents.getURL(),visible:v.getVisible(),bounds:v.getBounds(),id:v.webContents.id})));}
