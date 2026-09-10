@@ -6,6 +6,8 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const pkg = JSON.parse(read('package.json'));
+const bootstrap = read('src/security-bootstrap.js');
+const urlGuard = read('src/url-guard.js');
 const main = read('src/main.js');
 const preload = read('src/preload.js');
 const index = read('src/index.html');
@@ -21,6 +23,7 @@ function forbid(source, pattern, message) {
 }
 
 const fuses = pkg.build?.electronFuses || {};
+requireCondition(pkg.main === 'src/security-bootstrap.js', 'security bootstrap must remain the Electron entry point');
 requireCondition(pkg.build?.asar === true, 'electron-builder must package source inside app.asar');
 requireCondition(fuses.runAsNode === false, 'Electron fuse runAsNode must remain disabled');
 requireCondition(fuses.enableNodeOptionsEnvironmentVariable === false, 'Electron fuse NODE_OPTIONS must remain disabled');
@@ -48,6 +51,14 @@ requireCondition(main.includes('setPermissionRequestHandler'), 'Session permissi
 requireCondition(main.includes('setWindowOpenHandler'), 'Popup/window-open policy is required');
 requireCondition(main.includes('function trusted(event)'), 'IPC sender validation is required');
 requireCondition(main.includes("event.senderFrame === win.webContents.mainFrame"), 'IPC validation must bind commands to the top-level Cherry UI frame');
+
+requireCondition(bootstrap.includes("app.on('web-contents-created'"), 'URL Guard must attach before Cherry main process creates browsing contents');
+requireCondition(bootstrap.includes("contents.on('will-navigate'"), 'URL Guard must inspect top-level navigations');
+requireCondition(bootstrap.includes("contents.on('will-redirect'"), 'URL Guard must inspect redirects');
+requireCondition(bootstrap.includes("contents.on('will-attach-webview'"), 'webview attachment must remain denied');
+requireCondition(bootstrap.includes("require('./main')"), 'security bootstrap must hand off to the normal Cherry main process');
+requireCondition(urlGuard.includes('hasMixedConfusableScript'), 'URL Guard mixed-script detection is required');
+requireCondition(urlGuard.includes('url.username || url.password'), 'URL Guard credential-in-URL detection is required');
 
 requireCondition(preload.includes('contextBridge.exposeInMainWorld'), 'Preload must expose a narrow contextBridge API');
 requireCondition(!preload.includes('webFrame.executeJavaScript'), 'Preload must not expose arbitrary script execution');
@@ -81,4 +92,4 @@ if (failures.length) {
 }
 
 console.log('Cherry security baseline OK');
-console.log('Protected invariants: sandbox, context isolation, IPC trust boundary, permissions, CSP, provider transport, Electron fuses.');
+console.log('Protected invariants: sandbox, context isolation, IPC trust boundary, permissions, CSP, provider transport, Electron fuses, local URL Guard.');
