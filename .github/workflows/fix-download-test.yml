@@ -1,0 +1,45 @@
+name: One-time deterministic download test repair
+
+on:
+  push:
+    branches: [ci-stabilize-download-test]
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: windows-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v7
+        with:
+          ref: ci-stabilize-download-test
+
+      - name: Slow the download fixture and allow bounded completion time
+        shell: pwsh
+        run: |
+          $path = 'tests/browser.spec.js'
+          $text = [IO.File]::ReadAllText($path)
+          $oldTimer = "if(len>0){res.write(Buffer.alloc(len,67));sent+=len;}if(sent>=total){clearInterval(timer);res.end();}},20);res.on('close',()=>clearInterval(timer));return;"
+          $newTimer = "if(len>0){res.write(Buffer.alloc(len,67));sent+=len;}if(sent>=total){clearInterval(timer);res.end();}},100);res.on('close',()=>clearInterval(timer));return;"
+          $oldComplete = "await expect.poll(async()=>(await state()).downloads[0].state).toBe('completed')"
+          $newComplete = "await expect.poll(async()=>(await state()).downloads[0].state,{timeout:10000,message:'wait for resumed download completion'}).toBe('completed')"
+          if (-not $text.Contains($oldTimer)) { throw 'Download fixture timer was not found' }
+          if (-not $text.Contains($oldComplete)) { throw 'Download completion wait was not found' }
+          $text = $text.Replace($oldTimer, $newTimer).Replace($oldComplete, $newComplete)
+          [IO.File]::WriteAllText($path, $text, (New-Object Text.UTF8Encoding($false)))
+
+      - name: Verify test syntax
+        run: node --check tests/browser.spec.js
+
+      - name: Commit repair
+        shell: pwsh
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tests/browser.spec.js
+          git commit -m 'Stabilize download pause resume E2E fixture'
+          git push origin HEAD:ci-stabilize-download-test
