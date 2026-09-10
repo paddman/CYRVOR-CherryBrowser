@@ -15,31 +15,20 @@ concurrency:
 
 jobs:
   verify:
-    name: Syntax, unit and security baseline
+    name: Syntax, unit, security and source E2E
     runs-on: windows-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
 
-      - name: Repair stale lockfile for this branch
-        run: npm install --package-lock-only --ignore-scripts
-
-      - name: Upload repaired lockfile
-        uses: actions/upload-artifact@v4
-        with:
-          name: repaired-package-lock-${{ github.sha }}
-          path: package-lock.json
-          retention-days: 1
-          if-no-files-found: error
-
-      - name: Install dependencies from repaired lockfile
+      - name: Install locked dependencies
         run: npm ci
 
       - name: Static and security checks
@@ -48,32 +37,38 @@ jobs:
       - name: Unit tests
         run: npm test
 
+      - name: Source Electron E2E
+        run: npm run test:e2e
+
   package-windows:
-    name: Package hardened Windows app
+    name: Package and verify hardened Windows app
     runs-on: windows-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
     needs: verify
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
 
-      - name: Repair stale lockfile for this branch
-        run: npm install --package-lock-only --ignore-scripts
-
-      - name: Install dependencies from repaired lockfile
+      - name: Install locked dependencies
         run: npm ci
 
       - name: Build unpacked Windows application
         run: npm run build:dir
 
+      - name: Packaged Electron E2E
+        shell: pwsh
+        run: |
+          $env:CHERRY_EXECUTABLE = (Resolve-Path 'release-browser-identity/win-unpacked/Cherrywebbrowser.exe').Path
+          npm run test:e2e
+
       - name: Upload unpacked smoke-test build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: cherry-windows-unpacked-${{ github.sha }}
           path: release-browser-identity/win-unpacked/
