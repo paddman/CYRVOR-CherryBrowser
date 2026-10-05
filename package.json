@@ -21,7 +21,7 @@
     "@playwright/test": "1.63.0",
     "electron": "44.3.0",
     "electron-builder": "26.15.3",
-    "sharp": "^0.35.4"
+    "sharp": "^0.35.5"
   },
   "build": {
     "appId": "com.cherry.webbrowser",
